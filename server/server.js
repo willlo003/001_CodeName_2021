@@ -40,6 +40,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
+  //lobby
   socket.on("player join", (msg) => {
     io.emit("player join", msg);
   });
@@ -48,6 +49,16 @@ io.on("connection", (socket) => {
   });
   socket.on("player", (msg) => {
     io.emit("player", msg);
+  });
+  //game
+  socket.on("assign", (msg) => {
+    io.emit("assign", msg);
+  });
+  socket.on("getOnClickId", (msg) => {
+    io.emitit("getOnClickId", msg);
+  });
+  socket.on("cardOnClick", (msg) => {
+    io.emit("cardOnClick", msg);
   });
 });
 

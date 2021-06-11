@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-d
 import Login from "../pages/login";
 import Lobby from "../pages/lobby";
 import Game from "../pages/game";
+import io from "socket.io-client";
 
 
 
@@ -13,13 +14,14 @@ function App() {
   // if(!token) {
   //   return <Login setToken={setToken}/>
   // }
+const socket = io();
 
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Login} />
-        <Route path="/lobby" component={Lobby} />
-        <Route path="/game" component={Game} />
+        <Route exact path="/" component={Login}  />
+        <Route path="/lobby" render={(routeProps)=> <Lobby {...routeProps} io={socket} /> }/>
+        <Route path="/game" render={(routeProps)=> <Game {...routeProps} io={socket} /> }/>
       </Switch>
     </Router>
   );
