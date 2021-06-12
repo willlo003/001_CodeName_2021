@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Redirect, useHistory } from "react-router-dom";
 
-function Login() {
+function Login({ io }) {
   const [registeDetails, setregisteDetails] = useState({
     username: "",
     password: "",
@@ -48,10 +48,10 @@ function Login() {
     })
       .then((res) => res.json())
       .then((data) => {
+        io.emit("player logged on", data.loginDetails.username);
         // setToken(data);
         history.push("/lobby");
         // console.log(data);
-        // return <Redirect push to="/lobby" />;
       })
       .catch((err) => console.log("login error"));
   }

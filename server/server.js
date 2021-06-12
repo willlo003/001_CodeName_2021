@@ -4,27 +4,30 @@ const path = require("path");
 const app = express();
 
 const http = require("http");
+const socketIO = require("socket.io");
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+
+const io = socketIO(server);
+
+const port = 3000;
 
 const cors = require("cors");
 require("dotenv").config();
 
-const router = require("./routes/routes.js");
+const router = require("./routes/routes");
 
 //handle parsing request body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-if (process.env.NODE_ENV === "production") {
-  // handle requests for static files
-  app.use("/build", express.static(path.join(__dirname, "../build")));
+// if (process.env.NODE_ENV === "production") {
+// handle requests for static files
+app.use("/build", express.static(path.join(__dirname, "../build")));
 
-  //define route handler
-  app.use("/", router);
-}
+//define route handler
+app.use("/", router);
+// }
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) =>
@@ -36,16 +39,13 @@ app.get("*", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
+  console.log(`Connected: ${socket.id}`);
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
-  //lobby
-  socket.on("player join", (msg) => {
-    io.emit("player join", msg);
-  });
-  socket.on("game start", (msg) => {
-    io.emit("game start", msg);
+  // lobby;
+  socket.on("player logged on", (msg) => {
+    io.emit("player logged on", msg);
   });
   socket.on("player", (msg) => {
     io.emit("player", msg);
@@ -60,8 +60,13 @@ io.on("connection", (socket) => {
   socket.on("cardOnClick", (msg) => {
     io.emit("cardOnClick", msg);
   });
+  socket.on("win condition", (msg) => {
+    io.emit("win condition", msg);
+  });
 });
 
-server.listen(3000, () => {
-  console.log(`Server listening on port 3000`);
+server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
+
+module.exports = router;

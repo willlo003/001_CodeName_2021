@@ -13,8 +13,13 @@ module.exports = {
     publicPath: "/build/",
     proxy: {
       "/": {
-        target: "http://localhost:3000/",
-        secure: false,
+        target: "http://localhost:3000",
+        // pathRewrite: { "^/api": "" },
+      },
+      //fixing the bug "failed: WebSocket is closed before the connection is established."
+      "/socket.io": {
+        target: "http://localhost:3000",
+        ws: true,
       },
     },
   },

@@ -25,20 +25,18 @@ function Game({ io }) {
         const body = await result.json();
         setData(body.cards[0].name);
         // assign all cards
-        let indexs = [],
-          temp = [],
-          i = 0,
-          randomNum = 0;
-        while (i < 25) {
-          randomNum = Math.floor(Math.random() * body.cards[0].name.length);
-          if (indexs.indexOf(randomNum) === -1) {
-            indexs.push(randomNum);
-            temp.push(body.cards[0].name[randomNum]);
-            i++;
-          }
-        }
-        //random the win condition
-        setCards(temp);
+        // let indexs = [],
+        //   temp = [],
+        //   i = 0,
+        //   randomNum = 0;
+        // while (i < 25) {
+        //   randomNum = Math.floor(Math.random() * body.cards[0].name.length);
+        //   if (indexs.indexOf(randomNum) === -1) {
+        //     indexs.push(randomNum);
+        //     temp.push(body.cards[0].name[randomNum]);
+        //     i++;
+        //   }
+        // }
       } catch (err) {
         // error handling code
         console.log(err);
@@ -46,24 +44,22 @@ function Game({ io }) {
     };
     // call the async fetchData function
     fetchData();
+
     io.on("assign", (newCards) => {
-      console.log(newCards);
       setCards(newCards);
     });
+
     io.on("cardOnClick", (id) => {
-      let ind = /[0-9]/.exec(id);
-      if (ind) {
-        ind = parseInt(ind[0]) - 1 + rowsObj[ind.input[0]];
-      } else {
-        return ind;
-      }
-      let cardsArr = onClickCard;
-      cardsArr[ind] = true;
-      setOnClickCard(cardsArr);
-      let currentButton = document.getElementById(id);
-      if (cardsArr[ind] === true) {
-        currentButton.style.background = "grey";
-      }
+      // let ind = /[0-9]/.exec(id);
+      // if (ind) {
+      //   ind = parseInt(ind[0]) - 1 + rowsObj[ind.input[0]];
+      // } else {
+      //   return ind;
+      // }
+      // let cardsArr = onClickCard;
+      // cardsArr[ind] = true;
+      // setOnClickCard(cardsArr);
+      document.getElementById(id).style.background = "grey";
     });
     //win codition
     let randomColor = Math.floor(Math.random() * 10);
@@ -102,8 +98,12 @@ function Game({ io }) {
         j++;
       }
     }
-    console.log(stor);
+    console.log(randomColor, stor);
+    io.emit("win condition", stor);
     // setColorDis(arr);
+    io.on("win condition", (color) => {
+      setColorDis(color);
+    });
   }, []);
 
   function refresh() {

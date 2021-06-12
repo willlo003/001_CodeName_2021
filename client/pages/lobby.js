@@ -10,6 +10,20 @@ function Lobby({ io }) {
     background: "white",
   };
 
+  useEffect(() => {
+    io.on("player", (obj) => {
+      setPlayers(obj.array);
+      document.getElementById(obj.id).style.background = obj.color;
+      if (obj.start === true) {
+        history.push("/game");
+      }
+    });
+
+    io.on("player logged on", (username) => {
+      console.log(username);
+    });
+  }, []);
+
   function click(e) {
     let ind = /[0-9]/.exec(e.target.id);
     if (ind) {
@@ -17,34 +31,25 @@ function Lobby({ io }) {
     } else {
       return ind;
     }
-    io.emit("player", ind);
-  }
-
-  io.on("player", (ind) => {
+    let color = "grey";
     let array = players;
     if (array[ind] === true) {
       array[ind] = false;
+      color = "white";
     } else {
       array[ind] = true;
     }
-    setPlayers(array);
-    io.emit("player join", ind);
-    if (players.indexOf(false) === -1) {
-      io.emit("game start", "game");
+    let obj = {
+      id: e.target.id,
+      array: array,
+      color: color,
+      start: false,
+    };
+    if (array.indexOf(false) === -1) {
+      obj.start = true;
     }
-  });
-  io.on("player join", (index) => {
-    let currentButton = document.getElementById(`p${index}`);
-    if (players[index] === true) {
-      currentButton.style.background = "grey";
-    } else {
-      currentButton.style.background = "white";
-    }
-  });
-
-  io.on("game start", (directory) => {
-    history.push(directory);
-  });
+    io.emit("player", obj);
+  }
 
   return (
     <div className="App" id="omg">
