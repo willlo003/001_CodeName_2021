@@ -12,10 +12,15 @@ router.get("/", (req, res) => {
   res.status(200).sendFile(path.join(__dirname, "../../index.html"));
 });
 
-router.post("/register", (req, res) => {
-  // console.log("i m good");
-  res.status(200).json({});
-});
+router.post(
+  "/register",
+  usersController.getAllUsers,
+  usersController.createUser,
+  (req, res) => {
+    // console.log(typeof res.locals);
+    res.status(200).json({ message: res.locals.message });
+  }
+);
 
 router.post("/login", usersController.verifyUsers, (req, res) => {
   res.status(200).json(req.body);
@@ -31,7 +36,6 @@ router.get("/game", (req, res) => {
 });
 
 router.get("/cards", cardsController.getCards, (req, res) => {
-  // console.log("hi");
   res.status(200).json({ cards: res.locals.cards });
 });
 

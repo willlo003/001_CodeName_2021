@@ -2,12 +2,15 @@ body {
   background: rgb(255, 127, 127);
 }
 
-#p0,
-#p1,
-#p2,
-#p3 {
-  height: 100px;
-  width: 100px;
+.lobbyButton {
+  height: 80px;
+  width: 80px;
+  border-radius: 5px;
+}
+
+.table {
+  display: inline-grid;
+  grid-template-rows: auto auto;
 }
 
 .button-container {
@@ -75,4 +78,24 @@ body {
   grid-row-end: 7;
   grid-column-start: 7;
   grid-column-end: 8;
+}
+
+#online-player-list {
+  display: table;
+  width: 100%;
+  grid-template-columns: auto;
+  position: absolute;
+  bottom: 0;
+}
+.onlinePlayer {
+  margin: 5px;
+  background: rgb(44, 165, 149);
+  border-radius: 50%;
+  display: table-cell;
+  display: inline-block;
+  height: 50px;
+  width: 50px;
+  text-align: center;
+  font: bold 15px/13px Helvetica, Verdana, Tahoma;
+  box-shadow: 5px 5px 5px rgb(107, 99, 99);
 }

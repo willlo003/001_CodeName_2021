@@ -30,15 +30,22 @@ usersController.verifyUsers = async (req, res, next) => {
 };
 
 usersController.createUser = async (req, res, next) => {
-  const insert = `INSERT INTO person (username, password, games, win) VALUES (
-    '${req.body.username}',
-    '${req.body.password}',
-    null,
-    null
-    )`;
-  await db.query(insert, (err, res) => {
-    console(err, res);
-  });
+  //check the username whether already existed
+  const existUser = `SELECT * FROM person WHERE username='${req.body.registeDetails.username}'`;
+  const result = await db.query(existUser);
+  if (result.rows.length === 0) {
+    const insert = `INSERT INTO person (username, password, games, win) VALUES (
+      '${req.body.registeDetails.username}',
+      '${req.body.registeDetails.password}',
+      null,
+      null
+      )`;
+    await db.query(insert);
+    res.locals.message = "Success, Please login";
+  } else {
+    res.locals.message = "Username has been used";
+  }
+
   return next();
 };
 

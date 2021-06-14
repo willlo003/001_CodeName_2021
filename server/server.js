@@ -21,13 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// if (process.env.NODE_ENV === "production") {
-// handle requests for static files
-app.use("/build", express.static(path.join(__dirname, "../build")));
+if (process.env.NODE_ENV === "production") {
+  // handle requests for static files
+  app.use("/build", express.static(path.join(__dirname, "../build")));
 
-//define route handler
-app.use("/", router);
-// }
+  //define route handler
+  app.use("/", router);
+}
 
 // catch-all route handler for any requests to an unknown route
 app.use((req, res) =>
@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
   });
   // lobby;
   socket.on("player logged on", (msg) => {
-    io.emit("player logged on", msg);
+    socket.broadcast.emit("player logged on", msg);
   });
   socket.on("player", (msg) => {
     io.emit("player", msg);

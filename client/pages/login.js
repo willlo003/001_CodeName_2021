@@ -13,7 +13,8 @@ function Login({ io }) {
     password: "",
   });
 
-  function registe() {
+  function registe(e) {
+    e.preventDefault();
     const body = {
       registeDetails,
     };
@@ -22,13 +23,16 @@ function Login({ io }) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "cache-control": "max-age=0,no-cache,no-store,must-revalidate",
       },
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
-      .then((data) => console.log("register data posted"))
+      .then((data) => {
+        alert(data.message);
+      })
       .catch((err) => console.log("registe error"));
+    let input = document.getElementById("username");
+    input.value = "";
   }
 
   const history = useHistory();
@@ -51,7 +55,6 @@ function Login({ io }) {
         io.emit("player logged on", data.loginDetails.username);
         // setToken(data);
         history.push("/lobby");
-        // console.log(data);
       })
       .catch((err) => console.log("login error"));
   }
@@ -62,6 +65,7 @@ function Login({ io }) {
         <h1>Registration</h1>
         <label>Username</label>
         <input
+          id="username"
           name="username"
           type="text"
           onChange={(e) =>
