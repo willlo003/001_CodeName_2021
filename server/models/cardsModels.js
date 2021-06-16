@@ -8,7 +8,7 @@ mongoose
     useUnifiedTopology: true,
     dbName: "CodeName",
   })
-  .then(() => console.log("Connected to Mongo DB."))
+  .then(() => console.log("Connected to Cards' Mongo DB."))
   .catch((err) => console.log(err));
 
 const Schema = mongoose.Schema;

@@ -5,22 +5,27 @@ import Login from "../pages/login";
 import Lobby from "../pages/lobby";
 import Game from "../pages/game";
 import io from "socket.io-client";
-
-
-
+import useToken from "./userToken";
 
 function App() {
-  // const [token, setToken] = useState()
-  // if(!token) {
-  //   return <Login setToken={setToken}/>
-  // }
-const socket = io()
+  const socket = io()
 
+  const {token, setToken} = useToken()
+
+  if(!token) {
+    return (
+      <Router>
+        <Switch>
+        <Route path="/" render={(routeProps)=> <Login {...routeProps} io={socket} setToken={setToken} /> }/>
+        </Switch>
+      </Router>
+    );
+  }
 
   return (
     <Router>
       <Switch>
-      <Route exact path="/" render={(routeProps)=> <Login {...routeProps} io={socket} /> }/>
+      <Route exact path="/" render={(routeProps)=> <Login {...routeProps} io={socket} setToken={setToken} /> }/>
         <Route exact path="/lobby" render={(routeProps)=> <Lobby {...routeProps} io={socket} /> }/>
         <Route exact path="/game" render={(routeProps)=> <Game {...routeProps} io={socket} /> }/>
       </Switch>

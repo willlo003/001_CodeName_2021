@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import propTypes from "prop-types";
 import { Redirect, useHistory } from "react-router-dom";
 
-function Login({ io }) {
+function Login({ io, setToken, setOnlinePlayer }) {
   const [registeDetails, setregisteDetails] = useState({
     username: "",
     password: "",
@@ -52,9 +52,19 @@ function Login({ io }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        io.emit("player logged on", data.loginDetails.username);
-        // setToken(data);
-        history.push("/lobby");
+        let parsedOnlinePlayer = {};
+        if (localStorage.hasOwnProperty("onlinePlayer")) {
+          parsedOnlinePlayer = JSON.parse(localStorage["onlinePlayer"]);
+        }
+
+        if (!parsedOnlinePlayer.hasOwnProperty(data.loginDetails.username)) {
+          parsedOnlinePlayer[data.loginDetails.username] = true;
+          localStorage["onlinePlayer"] = JSON.stringify(parsedOnlinePlayer);
+          setToken(data.loginDetails);
+          history.push("/lobby");
+        } else {
+          alert("This account is already logged in ");
+        }
       })
       .catch((err) => console.log("login error"));
   }
@@ -114,8 +124,8 @@ function Login({ io }) {
   );
 }
 
-// Login.propTypes = {
-//   setToken: propTypes.func.isRequired,
-// };
+Login.propTypes = {
+  setToken: propTypes.func.isRequired,
+};
 
 export default Login;

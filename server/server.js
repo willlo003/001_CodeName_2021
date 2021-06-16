@@ -38,17 +38,25 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../index.html"));
 });
 
+const user = {};
+
 io.on("connection", (socket) => {
   console.log(`Connected: ${socket.id}`);
   socket.on("disconnect", () => {
-    console.log("user disconnected");
+    console.log("user " + user[socket.id] + " disconnected");
   });
   // lobby;
   socket.on("player logged on", (msg) => {
+    console.log("user " + msg + " connected");
+    user[socket.id] = msg;
+    console.log(user);
     socket.broadcast.emit("player logged on", msg);
   });
   socket.on("player", (msg) => {
     io.emit("player", msg);
+  });
+  socket.on("game start", (msg) => {
+    io.emit("game start", msg);
   });
   //game
   socket.on("assign", (msg) => {

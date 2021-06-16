@@ -1,5 +1,4 @@
 const db = require("../models/usersModels");
-// const User = require("../models/usersModels");
 
 const usersController = {};
 
@@ -23,6 +22,7 @@ usersController.verifyUsers = async (req, res, next) => {
     if (result.rows.length === 0) {
       return res.status(404);
     }
+    res.locals.result = result.rows;
     return next();
   } catch (err) {
     console.log(err);

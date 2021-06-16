@@ -8,10 +8,22 @@ function Lobby({ io }) {
   const [redCount, setRedCount] = useState(0);
   const [blueTeam, setBlueTeam] = useState(Array(4).fill(false));
   const [blueCount, setBlueCount] = useState(0);
+  const [username, setUsername] = useState(
+    JSON.parse(sessionStorage.getItem("token")).username
+  );
 
   const style = {
-    background: "white",
+    // background: "white",
   };
+
+  // window.onbeforeunload = function () {
+  //   let temp = JSON.parse(localStorage["onlinePlayer"]);
+  //   delete temp[username];
+  //   localStorage["onlinePlayer"] = JSON.stringify(temp);
+  //   io.emit("player logged on", temp);
+  // };
+
+  // const Prompt = closeWarning();
 
   useEffect(() => {
     io.on("player", (obj) => {
@@ -19,24 +31,49 @@ function Lobby({ io }) {
         setRedTeam(obj.array);
         setRedCount(obj.redCount);
         document.getElementById(obj.id).style.background = obj.color;
+        if (obj.color === "red") {
+          document.getElementById(obj.id).textContent = obj.username;
+        } else {
+          if (obj.id === "r0") {
+            document.getElementById(obj.id).textContent = "C";
+          } else {
+            document.getElementById(obj.id).textContent = "";
+          }
+        }
       } else {
         setBlueTeam(obj.array);
         setBlueCount(obj.blueCount);
         document.getElementById(obj.id).style.background = obj.color;
+        if (obj.color === "blue") {
+          document.getElementById(obj.id).textContent = obj.username;
+        } else {
+          if (obj.id === "b0") {
+            document.getElementById(obj.id).textContent = "C";
+          } else {
+            document.getElementById(obj.id).textContent = "";
+          }
+        }
       }
-      if (obj.start === true) {
-        history.push("/game");
+
+      let startButton = document.getElementById("S1");
+      if (obj.start === true && !startButton) {
+        let parent = document.getElementById("start");
+        let child = document.createElement("button");
+        child.textContent = "Start";
+        child.className = "Start-button";
+        child.id = "S1";
+        child.onclick = function () {
+          io.emit("game start", "/game");
+        };
+        parent.appendChild(child);
+      }
+      if (obj.start === false && startButton) {
+        startButton.remove();
       }
     });
 
-    io.on("player logged on", (username) => {
-      let parent = document.getElementById("online-player-list");
-      let child = document.createElement("div");
-      let subChild = document.createElement("p");
-      subChild.textContent = username[0];
-      child.className = "onlinePlayer";
-      child.appendChild(subChild);
-      parent.appendChild(child);
+    io.on("game start", (link) => {
+      history.push(link);
     });
   }, []);
 
@@ -82,70 +119,76 @@ function Lobby({ io }) {
       start: false,
       redCount: tempRedCount,
       blueCount: tempBlueCount,
+      username: username,
     };
 
     if (tempBlueCount >= 2 && tempRedCount >= 2) {
       obj.start = true;
+    } else {
+      obj.start = false;
     }
     io.emit("player", obj);
   }
 
   return (
     <div className="App">
-      <h1>Lobby</h1>
+      <div id="header">
+        <h1>Lobby</h1>
+        <h2>Welcome {username}</h2>
+      </div>
       <div className="table">
         <div className="redTeam">
           <button
             id="r0"
             className="lobbyButton"
             onClick={click}
-            style={style}
-          ></button>
+            // style={style}
+          >
+            C
+          </button>
           <button
             id="r1"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
           <button
             id="r2"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
           <button
             id="r3"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
         </div>
         <div className="blueTeam">
-          <button
-            id="b0"
-            className="lobbyButton"
-            onClick={click}
-            style={style}
-          ></button>
+          <button id="b0" className="lobbyButton" onClick={click} style={style}>
+            C
+          </button>
           <button
             id="b1"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
           <button
             id="b2"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
           <button
             id="b3"
             className="lobbyButton"
             onClick={click}
-            style={style}
+            // style={style}
           ></button>
         </div>
+        <div id="start"></div>
       </div>
       <div id="online-player-list"></div>
     </div>

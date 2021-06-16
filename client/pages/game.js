@@ -51,10 +51,6 @@ function Game({ io }) {
     io.on("cardOnClick", (colorArr) => {
       setCardsColor(colorArr);
     });
-
-    io.on("cardOnClick", (colorArr) => {
-      setCardsColor(colorArr);
-    });
   }, []);
 
   useEffect(() => {
@@ -70,7 +66,6 @@ function Game({ io }) {
   }, [colorDis]);
 
   useEffect(() => {
-    console.log(winColor);
     localStorage.setItem("winColor", JSON.stringify(winColor));
   }, [winColor]);
 

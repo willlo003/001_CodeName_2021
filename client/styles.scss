@@ -5,12 +5,27 @@ body {
 .lobbyButton {
   height: 80px;
   width: 80px;
-  border-radius: 5px;
+  border-radius: 20px;
+  margin: 5px;
 }
 
 .table {
   display: inline-grid;
   grid-template-rows: auto auto;
+}
+
+.redTeam {
+  display: inline-grid;
+  grid-template-columns: auto auto auto auto;
+}
+
+.blueTeam {
+  display: inline-grid;
+  grid-template-columns: auto auto auto auto;
+}
+#b0,
+#r0 {
+  border: 5px solid rgb(223, 214, 97);
 }
 
 .button-container {
@@ -49,7 +64,12 @@ body {
   border-radius: 30px;
   padding: 10px;
 }
-
+.Start-button {
+  margin: 20px;
+  width: 50px;
+  height: 30px;
+  border-radius: 20px;
+}
 .conditionBox {
   border-radius: 5px;
   width: 30px;
