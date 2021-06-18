@@ -18,12 +18,11 @@ function Game({ io }) {
   );
   const [redTeam, setRedTeam] = useState([]);
   const [blueTeam, setBlueTeam] = useState([]);
-  const [selectTeamObj, setSelectTeamObj] = useState({
-    tempTeam: null,
-    teamColor: null,
-    selected: false,
-  });
-  const [change, setChange] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [turn, setTurn] = useState();
+  const [remainRed, setRemainRed] = useState();
+  const [remainBlue, setRemainBlue] = useState();
+  const [gameover, setGameover] = useState(false);
 
   window.onbeforeunload = function () {
     if (localStorage.getItem("onlinePlayer") !== null) {
@@ -52,7 +51,6 @@ function Game({ io }) {
     // call the async fetchData function
     fetchData();
 
-    // console.log(localStorage.redTeam);
     if (localStorage.getItem("onlinePlayer") === null) {
       let temp = {};
       temp[loginUser] = true;
@@ -82,11 +80,47 @@ function Game({ io }) {
       const parsedBlueTeam = JSON.parse(localStorage["blueTeam"]);
       setBlueTeam(parsedBlueTeam);
 
-      const parsedSelectTeamObj = JSON.parse(
-        localStorage.getItem("selectTeamObj")
-      );
-      setSelectTeamObj(parsedSelectTeamObj);
+      const parsedPlaying = JSON.parse(localStorage["playing"]);
+      setPlaying(parsedPlaying);
+
+      // const parsedRemainBlue = JSON.parse(localStorage["remainBlue"]);
+      // setRemainBlue(parsedRemainBlue);
+
+      // const parsedRemainBed = JSON.parse(localStorage["remainRed"]);
+      // setRemainRed(parsedRemainBed);
     }
+
+    console.log(
+      localStorage["turn"] !== "undefined",
+      localStorage["turn"] !== undefined
+    );
+    if (localStorage["turn"] !== "undefined") {
+      const parsedTurn = JSON.parse(localStorage["turn"]);
+      setTurn(parsedTurn);
+    }
+
+    if (localStorage["remainRed"] !== "undefined") {
+      const parsedRemainBed = JSON.parse(localStorage["remainRed"]);
+      setRemainRed(parsedRemainBed);
+    }
+
+    if (localStorage["remainBlue"] !== "undefined") {
+      const parsedRemainBlue = JSON.parse(localStorage["remainBlue"]);
+      setRemainBlue(parsedRemainBlue);
+    }
+
+    if (localStorage["gameover"] !== "undefined") {
+      const parsedGameover = JSON.parse(localStorage["gameover"]);
+      setGameover(parsedGameover);
+    }
+
+    const parsedSelectRedTeamObj = JSON.parse(
+      sessionStorage.getItem("selectRedTeamObj")
+    );
+
+    const parsedSelectBlueTeamObj = JSON.parse(
+      sessionStorage.getItem("selectBlueTeamObj")
+    );
 
     io.on("assign", (newCards) => {
       setCards(newCards);
@@ -101,12 +135,32 @@ function Game({ io }) {
       setCardsColor(colorArr);
     });
 
-    io.on("select team", (selectTeamObj) => {
-      if (selectTeamObj.teamColor === "red") {
-        setRedTeam(selectTeamObj.tempTeam);
-      } else {
-        setBlueTeam(selectTeamObj.tempTeam);
-      }
+    io.on("select red team", (redTeamPlayers) => {
+      setRedTeam(redTeamPlayers);
+    });
+
+    io.on("select blue team", (blueTeamPlayers) => {
+      setBlueTeam(blueTeamPlayers);
+    });
+
+    io.on("playing", (status) => {
+      setPlaying(status);
+    });
+
+    io.on("turn", (turn) => {
+      setTurn(turn);
+    });
+
+    io.on("remainRed", (remainRed) => {
+      setRemainRed(remainRed);
+    });
+
+    io.on("remainBlue", (remainBlue) => {
+      setRemainBlue(remainBlue);
+    });
+
+    io.on("gameover", (gameover) => {
+      setGameover(gameover);
     });
   }, []);
 
@@ -135,9 +189,35 @@ function Game({ io }) {
   }, [blueTeam]);
 
   useEffect(() => {
-    console.log("storage");
-    localStorage.setItem("selectTeamObj", JSON.stringify(selectTeamObj));
-  }, [change]);
+    localStorage["playing"] = JSON.stringify(playing);
+  }, [playing]);
+
+  useEffect(() => {
+    if (turn !== "none") {
+      localStorage["turn"] = JSON.stringify(turn);
+    }
+  }, [turn]);
+
+  useEffect(() => {
+    localStorage["remainRed"] = JSON.stringify(remainRed);
+  }, [remainRed]);
+
+  useEffect(() => {
+    localStorage["remainBlue"] = JSON.stringify(remainBlue);
+  }, [remainBlue]);
+
+  useEffect(() => {
+    localStorage["gameover"] = JSON.stringify(gameover);
+  }, [gameover]);
+
+  function changeTeam() {
+    let clear = Array(25).fill({ background: "white" });
+    io.emit("cardOnClick", clear);
+    let clearCards = [];
+    io.emit("assign", clearCards);
+    io.emit("playing", false);
+    io.emit("gameover", false);
+  }
 
   function refresh() {
     let indexs = [],
@@ -152,6 +232,7 @@ function Game({ io }) {
         i++;
       }
     }
+    io.emit("playing", true);
     io.emit("assign", temp);
 
     //win codition
@@ -171,6 +252,8 @@ function Game({ io }) {
       redLength = 9;
     }
 
+    io.emit("remainRed", redLength);
+    io.emit("remainBlue", blueLength);
     //create new arr of color with different background color
     let checkInd = [],
       tempStor = Array(25).fill({ background: "none" }),
@@ -198,91 +281,151 @@ function Game({ io }) {
       colorArr: tempStor,
       winColor: { background: randomColor },
     };
-
+    io.emit("turn", randomColor);
     io.emit("win condition", obj);
-    // setColorDis(arr);
 
     // clear the clicked cards
     let clear = Array(25).fill({ background: "white" });
     io.emit("cardOnClick", clear);
+    io.emit("gameover", false);
   }
 
   function click(e) {
-    let ind = /\d+/g.exec(e.target.id);
-    if (ind) {
-      ind = parseInt(ind[0]);
-    } else {
-      return ind;
-    }
-    let allCardsColor = cardsColor;
-    allCardsColor[ind] = { background: "grey" };
-    io.emit("cardOnClick", allCardsColor);
-  }
-
-  function selectTeam(e) {
-    console.log(selectTeamObj);
-    let tempSelectTeamObj = selectTeamObj;
-    if (selectTeamObj.selected === false) {
-      if (e.target.id === "red") {
-        tempSelectTeamObj.tempTeam = redTeam.slice();
-        tempSelectTeamObj.teamColor = "red";
-      } else {
-        tempSelectTeamObj.tempTeam = blueTeam.slice();
-        tempSelectTeamObj.teamColor = "blue";
-      }
-      tempSelectTeamObj.selected = true;
-
-      tempSelectTeamObj.tempTeam.push(loginUser);
-      tempSelectTeamObj.tempTeam.join("\r\n");
-      console.log(tempSelectTeamObj.tempTeam);
-      setSelectTeamObj(tempSelectTeamObj);
-      let ans = change;
-      if (ans === false) {
-        ans = true;
-      } else {
-        ans = false;
-      }
-      setChange(ans);
-      io.emit("select team", selectTeamObj);
-    } else {
-      if (tempSelectTeamObj.teamColor === e.target.id) {
-        let index = tempSelectTeamObj.tempTeam.indexOf(loginUser);
-        tempSelectTeamObj.tempTeam = tempSelectTeamObj.tempTeam
-          .slice(0, index)
-          .concat(tempSelectTeamObj.tempTeam.slice(index + 1));
-        tempSelectTeamObj.selected = false;
-        setSelectTeamObj(tempSelectTeamObj);
-        let ans = change;
-        if (ans === false) {
-          ans = true;
+    if (gameover === false) {
+      if (
+        (loginUser === redTeam[0] && turn === "red") ||
+        (loginUser === blueTeam[0] && turn === "blue")
+      ) {
+        let ind = /\d+/g.exec(e.target.id);
+        if (ind) {
+          ind = parseInt(ind[0]);
         } else {
-          ans = false;
+          return ind;
         }
-        setChange(ans);
-        io.emit("select team", selectTeamObj);
+        let allCardsColor = cardsColor;
+        let currentRemainRed = remainRed;
+        let currentRemainBlue = remainBlue;
+        // console.log(colorDis[ind], turn);
+        allCardsColor[ind] = { background: colorDis[ind].background };
+        if (colorDis[ind].background === "red") {
+          currentRemainRed -= 1;
+          io.emit("remainRed", currentRemainRed);
+        }
+
+        if (colorDis[ind].background === "blue") {
+          currentRemainBlue -= 1;
+          io.emit("remainBlue", currentRemainBlue);
+        }
+
+        if (
+          colorDis[ind].background === "black" ||
+          currentRemainBlue === 0 ||
+          currentRemainRed === 0
+        ) {
+          io.emit("gameover", true);
+        }
+        io.emit("cardOnClick", allCardsColor);
+
+        if (turn === "red") {
+          colorDis[ind].background === "blue";
+          nextTurn();
+        } else if (turn === "blue") {
+          colorDis[ind].background === "red";
+          nextTurn();
+        }
       }
     }
   }
 
+  function selectRedTeam() {
+    if (playing === false) {
+      if (
+        sessionStorage.getItem("selectBlueTeamObj") === null ||
+        JSON.parse(sessionStorage.getItem("selectBlueTeamObj")).selected ===
+          false
+      ) {
+        let currentRedTeam = JSON.parse(localStorage["redTeam"]);
+        let currentRedObj = { selected: false };
+        if (sessionStorage.getItem("selectRedTeamObj") !== null) {
+          currentRedObj = JSON.parse(
+            sessionStorage.getItem("selectRedTeamObj")
+          );
+        }
+        if (currentRedObj.selected === false) {
+          currentRedTeam.push(loginUser);
+          currentRedObj.selected = true;
+        } else {
+          let index = currentRedTeam.indexOf(loginUser);
+          currentRedTeam = currentRedTeam
+            .slice(0, index)
+            .concat(currentRedTeam.slice(index + 1));
+          currentRedObj.selected = false;
+        }
+        sessionStorage.setItem(
+          "selectRedTeamObj",
+          JSON.stringify(currentRedObj)
+        );
+        io.emit("select red team", currentRedTeam);
+      }
+    }
+  }
+
+  function selectBlueTeam() {
+    if (playing === false) {
+      if (
+        sessionStorage.getItem("selectRedTeamObj") === null ||
+        JSON.parse(sessionStorage.getItem("selectRedTeamObj")).selected ===
+          false
+      ) {
+        let currentBlueTeam = JSON.parse(localStorage["blueTeam"]);
+        let currentBlueObj = { selected: false };
+        if (sessionStorage.getItem("selectBlueTeamObj") !== null) {
+          currentBlueObj = JSON.parse(
+            sessionStorage.getItem("selectBlueTeamObj")
+          );
+        }
+        if (currentBlueObj.selected === false) {
+          currentBlueTeam.push(loginUser);
+          currentBlueObj.selected = true;
+        } else {
+          let index = currentBlueTeam.indexOf(loginUser);
+          currentBlueTeam = currentBlueTeam
+            .slice(0, index)
+            .concat(currentBlueTeam.slice(index + 1));
+          currentBlueObj.selected = false;
+        }
+        sessionStorage.setItem(
+          "selectBlueTeamObj",
+          JSON.stringify(currentBlueObj)
+        );
+        io.emit("select blue team", currentBlueTeam);
+      }
+    }
+  }
+
+  function nextTurn() {
+    if (turn === "red") {
+      io.emit("turn", "blue");
+    } else {
+      io.emit("turn", "red");
+    }
+  }
   return (
     <div className="board">
       <h2>Welcome {loginUser}</h2>
+      <h2>Host {redTeam[0]}</h2>
+      <h2>Red team leader {redTeam[0]}</h2>
+      <h2>Blue team leader {blueTeam[0]}</h2>
+      <h3>Turn {turn}</h3>
+      {gameover === true && <h3>gameover</h3>}
       <div className="teamsBoard">
-        <button id="red" onClick={selectTeam}>
-          {redTeam.join("\n")}
+        <button id="red" onClick={selectRedTeam}>
+          {redTeam.join("\r\n")}
         </button>
-        <button id="blue" onClick={selectTeam}>
-          {blueTeam}
+        <button id="blue" onClick={selectBlueTeam}>
+          {blueTeam.join("\r\n")}
         </button>
       </div>
-      {/* <button
-        onClick={() => {
-          let clear = Array(25).fill({ background: "white" });
-          io.emit("cardOnClick", clear);
-        }}
-      >
-        clear
-      </button> */}
       <div className="button-container">
         <button
           id="a0"
@@ -485,40 +628,52 @@ function Game({ io }) {
           {cards[24]}
         </button>
       </div>
-      <div>
-        <button id="refresh" className="refresh" onClick={refresh}>
-          refresh
+      {loginUser === redTeam[0] && (
+        <div>
+          <button id="refresh" className="refresh" onClick={refresh}>
+            New Game
+          </button>
+          <button id="changeTeam" className="changeTeam" onClick={changeTeam}>
+            Change the team
+          </button>
+        </div>
+      )}
+      {(loginUser === redTeam[0] || loginUser === blueTeam[0]) && (
+        <button id="nextTurn" className="nextTurn" onClick={nextTurn}>
+          Next
         </button>
-      </div>
-      <div className="condition">
-        <div id="c0" className="conditionBox" style={colorDis[0]}></div>
-        <div id="c1" className="conditionBox" style={colorDis[1]}></div>
-        <div id="c2" className="conditionBox" style={colorDis[2]}></div>
-        <div id="c3" className="conditionBox" style={colorDis[3]}></div>
-        <div id="c4" className="conditionBox" style={colorDis[4]}></div>
-        <div id="c5" className="conditionBox" style={colorDis[5]}></div>
-        <div id="c6" className="conditionBox" style={colorDis[6]}></div>
-        <div id="c7" className="conditionBox" style={colorDis[7]}></div>
-        <div id="c8" className="conditionBox" style={colorDis[8]}></div>
-        <div id="c9" className="conditionBox" style={colorDis[9]}></div>
-        <div id="c10" className="conditionBox" style={colorDis[10]}></div>
-        <div id="c11" className="conditionBox" style={colorDis[11]}></div>
-        <div id="c12" className="conditionBox" style={colorDis[12]}></div>
-        <div id="c13" className="conditionBox" style={colorDis[13]}></div>
-        <div id="c14" className="conditionBox" style={colorDis[14]}></div>
-        <div id="c15" className="conditionBox" style={colorDis[15]}></div>
-        <div id="c16" className="conditionBox" style={colorDis[16]}></div>
-        <div id="c17" className="conditionBox" style={colorDis[17]}></div>
-        <div id="c18" className="conditionBox" style={colorDis[18]}></div>
-        <div id="c19" className="conditionBox" style={colorDis[19]}></div>
-        <div id="c20" className="conditionBox" style={colorDis[20]}></div>
-        <div id="c21" className="conditionBox" style={colorDis[21]}></div>
-        <div id="c22" className="conditionBox" style={colorDis[22]}></div>
-        <div id="c23" className="conditionBox" style={colorDis[23]}></div>
-        <div id="c24" className="conditionBox" style={colorDis[24]}></div>
-        <div id="left" className="winBox" style={winColor}></div>
-        <div id="right" className="winBox" style={winColor}></div>
-      </div>
+      )}
+      {(loginUser === redTeam[0] || loginUser === blueTeam[0]) && (
+        <div className="condition">
+          <div id="c0" className="conditionBox" style={colorDis[0]}></div>
+          <div id="c1" className="conditionBox" style={colorDis[1]}></div>
+          <div id="c2" className="conditionBox" style={colorDis[2]}></div>
+          <div id="c3" className="conditionBox" style={colorDis[3]}></div>
+          <div id="c4" className="conditionBox" style={colorDis[4]}></div>
+          <div id="c5" className="conditionBox" style={colorDis[5]}></div>
+          <div id="c6" className="conditionBox" style={colorDis[6]}></div>
+          <div id="c7" className="conditionBox" style={colorDis[7]}></div>
+          <div id="c8" className="conditionBox" style={colorDis[8]}></div>
+          <div id="c9" className="conditionBox" style={colorDis[9]}></div>
+          <div id="c10" className="conditionBox" style={colorDis[10]}></div>
+          <div id="c11" className="conditionBox" style={colorDis[11]}></div>
+          <div id="c12" className="conditionBox" style={colorDis[12]}></div>
+          <div id="c13" className="conditionBox" style={colorDis[13]}></div>
+          <div id="c14" className="conditionBox" style={colorDis[14]}></div>
+          <div id="c15" className="conditionBox" style={colorDis[15]}></div>
+          <div id="c16" className="conditionBox" style={colorDis[16]}></div>
+          <div id="c17" className="conditionBox" style={colorDis[17]}></div>
+          <div id="c18" className="conditionBox" style={colorDis[18]}></div>
+          <div id="c19" className="conditionBox" style={colorDis[19]}></div>
+          <div id="c20" className="conditionBox" style={colorDis[20]}></div>
+          <div id="c21" className="conditionBox" style={colorDis[21]}></div>
+          <div id="c22" className="conditionBox" style={colorDis[22]}></div>
+          <div id="c23" className="conditionBox" style={colorDis[23]}></div>
+          <div id="c24" className="conditionBox" style={colorDis[24]}></div>
+          <div id="left" className="winBox" style={winColor}></div>
+          <div id="right" className="winBox" style={winColor}></div>
+        </div>
+      )}
     </div>
   );
 }

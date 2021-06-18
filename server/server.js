@@ -71,8 +71,26 @@ io.on("connection", (socket) => {
   socket.on("win condition", (msg) => {
     io.emit("win condition", msg);
   });
-  socket.on("select team", (msg) => {
-    io.emit("select team", msg);
+  socket.on("select red team", (msg) => {
+    io.emit("select red team", msg);
+  });
+  socket.on("select blue team", (msg) => {
+    io.emit("select blue team", msg);
+  });
+  socket.on("playing", (msg) => {
+    io.emit("playing", msg);
+  });
+  socket.on("turn", (msg) => {
+    io.emit("turn", msg);
+  });
+  socket.on("remainRed", (msg) => {
+    io.emit("remainRed", msg);
+  });
+  socket.on("remainBlue", (msg) => {
+    io.emit("remainBlue", msg);
+  });
+  socket.on("gameover", (msg) => {
+    io.emit("gameover", msg);
   });
 });
 
