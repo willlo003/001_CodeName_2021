@@ -28,16 +28,24 @@ function Game({ io }) {
     fetchData();
 
     const parsedCardsColor = JSON.parse(localStorage["cardsColor"]);
-    setCardsColor(parsedCardsColor);
+    if (parsedCardsColor !== null) {
+      setCardsColor(parsedCardsColor);
+    }
 
     const parsedCards = JSON.parse(localStorage["cards"]);
-    setCards(parsedCards);
+    if (parsedCards !== null) {
+      setCards(parsedCards);
+    }
 
     const parsedColorDis = JSON.parse(localStorage["colorDis"]);
-    setColorDis(parsedColorDis);
+    if (parsedColorDis !== null) {
+      setColorDis(parsedColorDis);
+    }
 
     const parsedWinColor = JSON.parse(localStorage.getItem("winColor"));
-    setWinColor(parsedWinColor);
+    if (parsedWinColor !== null) {
+      setWinColor(parsedWinColor);
+    }
 
     io.on("assign", (newCards) => {
       setCards(newCards);

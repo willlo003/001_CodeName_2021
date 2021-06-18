@@ -52,19 +52,19 @@ function Login({ io, setToken, setOnlinePlayer }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        let parsedOnlinePlayer = {};
-        if (localStorage.hasOwnProperty("onlinePlayer")) {
-          parsedOnlinePlayer = JSON.parse(localStorage["onlinePlayer"]);
-        }
+        // let parsedOnlinePlayer = {};
+        // if (localStorage.hasOwnProperty("onlinePlayer")) {
+        //   parsedOnlinePlayer = JSON.parse(localStorage["onlinePlayer"]);
+        // }
 
-        if (!parsedOnlinePlayer.hasOwnProperty(data.loginDetails.username)) {
-          parsedOnlinePlayer[data.loginDetails.username] = true;
-          localStorage["onlinePlayer"] = JSON.stringify(parsedOnlinePlayer);
-          setToken(data.loginDetails);
-          history.push("/lobby");
-        } else {
-          alert("This account is already logged in ");
-        }
+        // if (!parsedOnlinePlayer.hasOwnProperty(data.loginDetails.username)) {
+        //   parsedOnlinePlayer[data.loginDetails.username] = true;
+        //   localStorage["onlinePlayer"] = JSON.stringify(parsedOnlinePlayer);
+        setToken(data.loginDetails);
+        history.push("/lobby");
+        // } else {
+        //   alert("This account is already logged in ");
+        // }
       })
       .catch((err) => console.log("login error"));
   }
