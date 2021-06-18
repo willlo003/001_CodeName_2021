@@ -91,25 +91,37 @@ function Game({ io }) {
     }
 
     console.log(
-      localStorage["turn"] !== "undefined",
-      localStorage["turn"] !== undefined
+      localStorage["remainRed"] !== "undefined",
+      localStorage["remainRed"] !== undefined
     );
-    if (localStorage["turn"] !== "undefined") {
+    if (
+      localStorage["turn"] !== undefined &&
+      localStorage["turn"] !== "undefined"
+    ) {
       const parsedTurn = JSON.parse(localStorage["turn"]);
       setTurn(parsedTurn);
     }
 
-    if (localStorage["remainRed"] !== "undefined") {
+    if (
+      localStorage["remainRed"] !== "undefined" &&
+      localStorage["remainRed"] !== undefined
+    ) {
       const parsedRemainBed = JSON.parse(localStorage["remainRed"]);
       setRemainRed(parsedRemainBed);
     }
 
-    if (localStorage["remainBlue"] !== "undefined") {
+    if (
+      localStorage["remainBlue"] !== "undefined" &&
+      localStorage["remainBlue"] !== undefined
+    ) {
       const parsedRemainBlue = JSON.parse(localStorage["remainBlue"]);
       setRemainBlue(parsedRemainBlue);
     }
 
-    if (localStorage["gameover"] !== "undefined") {
+    if (
+      localStorage["gameover"] !== "undefined" &&
+      localStorage["gameover"] !== undefined
+    ) {
       const parsedGameover = JSON.parse(localStorage["gameover"]);
       setGameover(parsedGameover);
     }
@@ -326,11 +338,9 @@ function Game({ io }) {
         }
         io.emit("cardOnClick", allCardsColor);
 
-        if (turn === "red") {
-          colorDis[ind].background === "blue";
+        if (turn === "red" && colorDis[ind].background === "blue") {
           nextTurn();
-        } else if (turn === "blue") {
-          colorDis[ind].background === "red";
+        } else if (turn === "blue" && colorDis[ind].background === "red") {
           nextTurn();
         }
       }
