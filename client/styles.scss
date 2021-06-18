@@ -9,25 +9,62 @@ body {
   margin: 5px;
 }
 
-.table {
-  display: inline-grid;
-  grid-template-rows: auto auto;
-}
+/////////////lobby
 
-.redTeam {
-  display: inline-grid;
-  grid-template-columns: auto auto auto auto;
-}
+// .Start-button {
+//   margin: 20px;
+//   width: 50px;
+//   height: 30px;
+//   border-radius: 20px;
+// }
 
-.blueTeam {
-  display: inline-grid;
-  grid-template-columns: auto auto auto auto;
-}
-#b0,
-#r0 {
-  border: 5px solid rgb(223, 214, 97);
-}
+// .table {
+//   display: inline-grid;
+//   grid-template-rows: auto auto;
+// }
 
+// .redTeam {
+//   display: inline-grid;
+//   grid-template-columns: auto auto auto auto;
+// }
+
+// .blueTeam {
+//   display: inline-grid;
+//   grid-template-columns: auto auto auto auto;
+// }
+
+// #b0,
+// #r0 {
+//   border: 5px solid rgb(223, 214, 97);
+// }
+
+// #online-player-list {
+//   display: table;
+//   width: 100%;
+//   grid-template-columns: auto;
+//   position: absolute;
+//   bottom: 0;
+// }
+// .onlinePlayer {
+//   margin: 5px;
+//   background: rgb(44, 165, 149);
+//   border-radius: 50%;
+//   display: table-cell;
+//   display: inline-block;
+//   height: 50px;
+//   width: 50px;
+//   text-align: center;
+//   font: bold 15px/13px Helvetica, Verdana, Tahoma;
+//   box-shadow: 5px 5px 5px rgb(107, 99, 99);
+// }
+
+/////////////game
+
+.teamsBoard {
+  width: 700px;
+  display: grid;
+  grid-template-columns: auto auto;
+}
 .button-container {
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto;
@@ -47,11 +84,6 @@ body {
   margin: 10px;
 }
 
-.refresh {
-  width: 100px;
-  height: 50px;
-}
-
 .condition {
   background: rgba(56, 142, 148, 0.76);
   display: inline-grid;
@@ -64,12 +96,7 @@ body {
   border-radius: 30px;
   padding: 10px;
 }
-.Start-button {
-  margin: 20px;
-  width: 50px;
-  height: 30px;
-  border-radius: 20px;
-}
+
 .conditionBox {
   border-radius: 5px;
   width: 30px;
@@ -100,22 +127,18 @@ body {
   grid-column-end: 8;
 }
 
-#online-player-list {
-  display: table;
-  width: 100%;
-  grid-template-columns: auto;
-  position: absolute;
-  bottom: 0;
+#red {
+  width: 250px;
+  height: 80px;
+  margin: 10px;
+  border-radius: 20px;
+  background: rgb(201, 97, 97);
 }
-.onlinePlayer {
-  margin: 5px;
-  background: rgb(44, 165, 149);
-  border-radius: 50%;
-  display: table-cell;
-  display: inline-block;
-  height: 50px;
-  width: 50px;
-  text-align: center;
-  font: bold 15px/13px Helvetica, Verdana, Tahoma;
-  box-shadow: 5px 5px 5px rgb(107, 99, 99);
+
+#blue {
+  width: 250px;
+  height: 80px;
+  margin: 10px;
+  border-radius: 20px;
+  background: rgb(100, 147, 201);
 }

@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
     console.log("user " + user[socket.id] + " disconnected");
   });
   // lobby;
-  socket.on("player logged on", (msg) => {
+  /*   socket.on("player logged on", (msg) => {
     console.log("user " + msg + " connected");
     user[socket.id] = msg;
     console.log(user);
@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
   });
   socket.on("game start", (msg) => {
     io.emit("game start", msg);
-  });
+  }); */
   //game
   socket.on("assign", (msg) => {
     io.emit("assign", msg);
@@ -70,6 +70,9 @@ io.on("connection", (socket) => {
   });
   socket.on("win condition", (msg) => {
     io.emit("win condition", msg);
+  });
+  socket.on("select team", (msg) => {
+    io.emit("select team", msg);
   });
 });
 

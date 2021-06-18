@@ -30,9 +30,9 @@ router.post(
   }
 );
 
-router.get("/lobby", (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, "../../index.html"));
-});
+// router.get("/lobby", (req, res) => {
+//   res.status(200).sendFile(path.join(__dirname, "../../index.html"));
+// });
 
 router.get("/game", (req, res) => {
   res.status(200).sendFile(path.join(__dirname, "../../index.html"));

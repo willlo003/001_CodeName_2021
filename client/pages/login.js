@@ -61,7 +61,7 @@ function Login({ io, setToken, setOnlinePlayer }) {
         //   parsedOnlinePlayer[data.loginDetails.username] = true;
         //   localStorage["onlinePlayer"] = JSON.stringify(parsedOnlinePlayer);
         setToken(data.loginDetails);
-        history.push("/lobby");
+        history.push("/game");
         // } else {
         //   alert("This account is already logged in ");
         // }
