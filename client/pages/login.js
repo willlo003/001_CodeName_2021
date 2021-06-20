@@ -13,7 +13,7 @@ function Login({ io, setToken, setOnlinePlayer }) {
     password: "",
   });
 
-  function registe(e) {
+  function signUp(e) {
     e.preventDefault();
     const body = {
       registeDetails,
@@ -70,56 +70,63 @@ function Login({ io, setToken, setOnlinePlayer }) {
   }
 
   return (
-    <div className="App">
-      <form className="Registration">
-        <h1>Registration</h1>
-        <label>Username</label>
-        <input
-          id="username"
-          name="username"
-          type="text"
-          onChange={(e) =>
-            setregisteDetails({ ...registeDetails, username: e.target.value })
-          }
-          value={registeDetails.username}
-        />
-        <label>Password</label>
-        <input
-          name="password"
-          type="password"
-          onChange={(e) =>
-            setregisteDetails({ ...registeDetails, password: e.target.value })
-          }
-          value={registeDetails.password}
-        />
-        <button type="submit" value="Register" onClick={registe}>
-          Registe
-        </button>
-      </form>
-      <form className="Login" onSubmit={login}>
-        <h1>Login</h1>
-        <label>Username</label>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username..."
-          onChange={(e) =>
-            setloginDetails({ ...loginDetails, username: e.target.value })
-          }
-          value={loginDetails.username}
-        />
-        <label>Password</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Password..."
-          onChange={(e) =>
-            setloginDetails({ ...loginDetails, password: e.target.value })
-          }
-          value={loginDetails.password}
-        />
-        <button className="login">Login</button>
-      </form>
+    <div>
+      <h1 className="login-heading">CodeName</h1>
+      <div className="App">
+        <form className="sign-up-container">
+          <h2>Sign Up</h2>
+          <label>Username</label>
+          <br></br>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            onChange={(e) =>
+              setregisteDetails({ ...registeDetails, username: e.target.value })
+            }
+            value={registeDetails.username}
+          />
+          <br></br>
+          <label>Password</label>
+          <br></br>
+          <input
+            name="password"
+            type="password"
+            onChange={(e) =>
+              setregisteDetails({ ...registeDetails, password: e.target.value })
+            }
+            value={registeDetails.password}
+          />
+          <br></br>
+          <button className="sign-up-button" onClick={signUp}>
+            Sign up
+          </button>
+        </form>
+        <form className="login-container" onSubmit={login}>
+          <h2>Login</h2>
+          <label>Username</label>
+          <input
+            type="text"
+            name="username"
+            placeholder="Username..."
+            onChange={(e) =>
+              setloginDetails({ ...loginDetails, username: e.target.value })
+            }
+            value={loginDetails.username}
+          />
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password..."
+            onChange={(e) =>
+              setloginDetails({ ...loginDetails, password: e.target.value })
+            }
+            value={loginDetails.password}
+          />
+          <button className="login-button">Login</button>
+        </form>
+      </div>
     </div>
   );
 }

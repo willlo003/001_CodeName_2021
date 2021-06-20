@@ -6,6 +6,8 @@ import Login from "../pages/login";
 import Game from "../pages/game";
 import io from "socket.io-client";
 import useToken from "./userToken";
+// import img from "../../image/background.jpeg";
+
 
 function App() {
   const socket = io()

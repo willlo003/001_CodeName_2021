@@ -1,15 +1,92 @@
 body {
-  background: rgb(255, 127, 127);
+  background-image: url(../image/background.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: "Gill Sans", sans-serif;
 }
 
-.lobbyButton {
-  height: 80px;
-  width: 80px;
+.login-heading {
+  margin: 20px;
+  text-align: center;
+  // position: relative;
+  // left: 250px;
+}
+
+.game-heading {
+  margin: 20px;
+  // text-align: center;
+  position: relative;
+  left: 250px;
+}
+
+.App {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  // margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // padding: 5px;
+}
+
+.sign-up-container,
+.login-container {
+  padding: 10px;
+  text-align: center;
+  margin: 10px;
+  background: rgb(211, 211, 211);
+  opacity: 0.8;
   border-radius: 20px;
-  margin: 5px;
+  width: 200px;
+  height: 300px;
+}
+
+.sign-up-button,
+.login-button {
+  margin: 8px;
+  display: inline-block;
+  padding: 10px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 15px;
+}
+
+.sign-up-button:hover,
+.login-button:hover {
+  background-color: #3e8e41;
+}
+
+.sign-up-button:active,
+.login-button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+input {
+  margin: 8px;
+  padding: 5px;
+  background: white;
+  border: 0 none;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
 }
 
 /////////////lobby
+
+// .lobbyButton {
+//   height: 80px;
+//   width: 80px;
+//   border-radius: 20px;
+//   margin: 5px;
+// }
 
 // .Start-button {
 //   margin: 20px;
@@ -60,12 +137,62 @@ body {
 
 /////////////game
 
+.gameover {
+  font-size: 130px;
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  transform: rotate(335deg);
+  opacity: 0.3;
+}
+
 .teamsBoard {
-  width: 700px;
+  // width: 700px;
   display: grid;
   grid-template-columns: auto auto;
+  font-family: "Gill Sans", sans-serif;
+  position: absolute;
+  top: 250px;
+  left: 740px;
 }
+
+#red {
+  width: 140px;
+  height: 120px;
+  margin: 10px;
+  border: 5px solid rgb(77, 77, 77);
+  border-radius: 20px;
+  background: rgb(211, 140, 140);
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 20px;
+}
+#red:hover,
+#blue:hover {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+#red:active,
+#blue:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(6px);
+}
+
+#blue {
+  width: 140px;
+  height: 120px;
+  margin: 10px;
+  border-radius: 20px;
+  border: 5px solid rgb(77, 77, 77);
+  background: rgb(126, 161, 201);
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 18px;
+}
+
 .button-container {
+  padding: 10px;
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto;
   width: 700px;
@@ -78,19 +205,38 @@ body {
 }
 
 .button-container > button {
+  background: url(../image/button-bg.jpeg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   width: 120px;
   height: 80px;
   float: left;
   margin: 10px;
+  border-radius: 10px;
+  border: 5px solid rgb(147, 148, 84);
+  font-size: 15px;
+}
+
+.button-container > button:hover {
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.button-container > button:active {
+  box-shadow: 0 5px #666;
+  transform: translateY(6px);
 }
 
 .condition {
   background: rgba(56, 142, 148, 0.76);
+  margin: 10px;
   display: inline-grid;
   grid-template-columns: auto auto auto auto auto auto auto;
   grid-template-rows: auto auto auto auto auto auto;
-  // width: 200px;
-  // height: 200px;
+  position: absolute;
+  top: 380px;
+  left: 740px;
   align-items: center;
   justify-content: center;
   border-radius: 30px;
@@ -127,20 +273,46 @@ body {
   grid-column-end: 8;
 }
 
-#red {
-  width: 250px;
-  height: 80px;
+.information {
+  padding: 10px;
+  position: absolute;
+  top: 50px;
+  left: 740px;
   margin: 10px;
+  background: rgb(211, 211, 211);
+  opacity: 0.8;
   border-radius: 20px;
-  background: rgb(201, 97, 97);
-  white-space: pre-wrap;
+  width: 300px;
+  height: 170px;
+  font-size: 10px;
 }
 
-#blue {
-  width: 250px;
-  height: 80px;
-  margin: 10px;
-  border-radius: 20px;
-  background: rgb(100, 147, 201);
-  white-space: pre-wrap;
+.control {
+  position: absolute;
+  left: 100px;
+}
+
+.control > button {
+  margin: 8px;
+  display: inline-block;
+  padding: 10px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 15px;
+}
+
+.control > button:hover {
+  background-color: #3e8e41;
+}
+
+.control > button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
