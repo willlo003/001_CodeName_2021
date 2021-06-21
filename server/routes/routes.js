@@ -26,7 +26,7 @@ router.post(
   usersController.verifyUsers,
 
   (req, res) => {
-    res.status(200).json(req.body);
+    res.status(200).json(res.locals);
   }
 );
 

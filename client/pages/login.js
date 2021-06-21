@@ -52,19 +52,12 @@ function Login({ io, setToken, setOnlinePlayer }) {
     })
       .then((res) => res.json())
       .then((data) => {
-        // let parsedOnlinePlayer = {};
-        // if (localStorage.hasOwnProperty("onlinePlayer")) {
-        //   parsedOnlinePlayer = JSON.parse(localStorage["onlinePlayer"]);
-        // }
-
-        // if (!parsedOnlinePlayer.hasOwnProperty(data.loginDetails.username)) {
-        //   parsedOnlinePlayer[data.loginDetails.username] = true;
-        //   localStorage["onlinePlayer"] = JSON.stringify(parsedOnlinePlayer);
-        setToken(data.loginDetails);
-        history.push("/game");
-        // } else {
-        //   alert("This account is already logged in ");
-        // }
+        if (data.message) {
+          alert(data.message);
+        } else {
+          setToken(data);
+          history.push("/game");
+        }
       })
       .catch((err) => console.log("login error"));
   }

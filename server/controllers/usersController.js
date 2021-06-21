@@ -1,4 +1,7 @@
 const db = require("../models/usersModels");
+// const { checkout } = require("../routes/routes");
+const bcrypt = require("bcryptjs");
+const SALT_WORK_FACTOR = 5;
 
 const usersController = {};
 
@@ -18,12 +21,24 @@ usersController.verifyUsers = async (req, res, next) => {
     const username = req.body.loginDetails.username;
     const person = `SELECT * FROM person WHERE username='${username}'`;
     const result = await db.query(person);
-    // console.log(result.rows);
-    if (result.rows.length === 0) {
-      return res.status(404);
+    console.log(result.rows.length);
+    if (result.rows.length === 1) {
+      if (
+        (await bcrypt.compare(
+          req.body.loginDetails.password,
+          result.rows[0].password
+        )) === false
+      ) {
+        res.locals.message = "Invalid username or password";
+        return next();
+      } else {
+        res.locals = result.rows[0];
+        return next();
+      }
+    } else {
+      res.locals.message = "Invalid username or password";
+      return next();
     }
-    res.locals.result = result.rows;
-    return next();
   } catch (err) {
     console.log(err);
   }
@@ -31,12 +46,34 @@ usersController.verifyUsers = async (req, res, next) => {
 
 usersController.createUser = async (req, res, next) => {
   //check the username whether already existed
+  // console.log(req.body.registeDetails.username.includes(" "));
+  if (
+    req.body.registeDetails.username.includes(" ") ||
+    req.body.registeDetails.password.includes(" ")
+  ) {
+    res.locals.message = "Invalid username or password";
+    return next();
+  }
+  if (
+    req.body.registeDetails.username.length < 4 ||
+    req.body.registeDetails.password.length < 8
+  ) {
+    res.locals.message =
+      "Username and password at least 4 and 8 characters in length respectively";
+    return next();
+  }
   const existUser = `SELECT * FROM person WHERE username='${req.body.registeDetails.username}'`;
   const result = await db.query(existUser);
+
   if (result.rows.length === 0) {
+    const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+    const hashedPassword = await bcrypt.hash(
+      req.body.registeDetails.password,
+      salt
+    );
     const insert = `INSERT INTO person (username, password, games, win) VALUES (
       '${req.body.registeDetails.username}',
-      '${req.body.registeDetails.password}',
+      '${hashedPassword}',
       null,
       null
       )`;

@@ -216,7 +216,7 @@ function Game({ io }) {
   }, [gameover]);
 
   function changeTeam() {
-    let clear = Array(25).fill({ background: "white" });
+    let clear = Array(25).fill({});
     io.emit("cardOnClick", clear);
     let clearCards = [];
     io.emit("assign", clearCards);
@@ -652,7 +652,6 @@ function Game({ io }) {
             {cards[24]}
           </button>
         </div>
-        \
         <div className="control">
           {loginUser === redTeam[0] && (
             <button id="refresh" className="refresh" onClick={refresh}>
