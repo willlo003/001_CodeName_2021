@@ -12,11 +12,9 @@ router.get("/", (req, res) => {
 
 router.post(
   "/register",
-  // usersController.getAllUsers,
   usersController.createUser,
 
   (req, res) => {
-    // console.log(typeof res.locals);
     res.status(200).json({ message: res.locals.message });
   }
 );
@@ -29,10 +27,6 @@ router.post(
     res.status(200).json(res.locals);
   }
 );
-
-// router.get("/lobby", (req, res) => {
-//   res.status(200).sendFile(path.join(__dirname, "../../index.html"));
-// });
 
 router.get("/game", (req, res) => {
   res.status(200).sendFile(path.join(__dirname, "../../index.html"));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-// import { Redirect, useHistory } from "react-router-dom";
-// import "../styles.scss";
+import Conditions from "../components/Condition";
+import Card from "../components/Card";
 
 function Game({ io }) {
   const [cards, setCards] = useState([]);
@@ -9,7 +9,9 @@ function Game({ io }) {
   const [colorDis, setColorDis] = useState(
     Array(25).fill({ background: "none" })
   );
-  const [cardsColor, setCardsColor] = useState(Array(25).fill({}));
+  const [cardsColor, setCardsColor] = useState(
+    Array(25).fill({ background: "none" })
+  );
   const [loginUser, setLoginUser] = useState(
     JSON.parse(sessionStorage.getItem("token")).username
   );
@@ -20,6 +22,7 @@ function Game({ io }) {
   const [remainRed, setRemainRed] = useState();
   const [remainBlue, setRemainBlue] = useState();
   const [gameover, setGameover] = useState(false);
+  const [onClickCard, setOnClickCard] = useState();
 
   window.onbeforeunload = function () {
     if (localStorage.getItem("onlinePlayer") !== null) {
@@ -79,12 +82,6 @@ function Game({ io }) {
 
       const parsedPlaying = JSON.parse(localStorage["playing"]);
       setPlaying(parsedPlaying);
-
-      // const parsedRemainBlue = JSON.parse(localStorage["remainBlue"]);
-      // setRemainBlue(parsedRemainBlue);
-
-      // const parsedRemainBed = JSON.parse(localStorage["remainRed"]);
-      // setRemainRed(parsedRemainBed);
     }
 
     if (
@@ -295,13 +292,17 @@ function Game({ io }) {
     io.emit("gameover", false);
   }
 
-  function click(e) {
+  useEffect(() => {
+    click(onClickCard);
+  }, [onClickCard]);
+
+  function click(id) {
     if (gameover === false) {
       if (
         (loginUser === redTeam[0] && turn === "red") ||
         (loginUser === blueTeam[0] && turn === "blue")
       ) {
-        let ind = /\d+/g.exec(e.target.id);
+        let ind = /\d+/g.exec(id);
         if (ind) {
           ind = parseInt(ind[0]);
         } else {
@@ -348,7 +349,6 @@ function Game({ io }) {
       }
     }
   }
-
   function selectRedTeam() {
     if (playing === false) {
       if (
@@ -451,206 +451,15 @@ function Game({ io }) {
         </div>
         <div className="button-container">
           {gameover === true && <h3 className="gameover">gameover</h3>}
-          <button
-            id="a0"
-            className="gameButton"
-            style={cardsColor[0]}
-            onClick={click}
-          >
-            {cards[0]}
-          </button>
-          <button
-            id="a1"
-            className="gameButton"
-            style={cardsColor[1]}
-            onClick={click}
-          >
-            {cards[1]}
-          </button>
-          <button
-            id="a2"
-            className="gameButton"
-            style={cardsColor[2]}
-            onClick={click}
-          >
-            {cards[2]}
-          </button>
-          <button
-            id="a3"
-            className="gameButton"
-            style={cardsColor[3]}
-            onClick={click}
-          >
-            {cards[3]}
-          </button>
-          <button
-            id="a4"
-            className="gameButton"
-            style={cardsColor[4]}
-            onClick={click}
-          >
-            {cards[4]}
-          </button>
-          <button
-            id="a5"
-            className="gameButton"
-            style={cardsColor[5]}
-            onClick={click}
-          >
-            {cards[5]}
-          </button>
-          <button
-            id="a6"
-            className="gameButton"
-            style={cardsColor[6]}
-            onClick={click}
-          >
-            {cards[6]}
-          </button>
-          <button
-            id="a7"
-            className="gameButton"
-            style={cardsColor[7]}
-            onClick={click}
-          >
-            {cards[7]}
-          </button>
-          <button
-            id="a8"
-            className="gameButton"
-            style={cardsColor[8]}
-            onClick={click}
-          >
-            {cards[8]}
-          </button>
-          <button
-            id="a9"
-            className="gameButton"
-            style={cardsColor[9]}
-            onClick={click}
-          >
-            {cards[9]}
-          </button>
-          <button
-            id="a10"
-            className="gameButton"
-            style={cardsColor[10]}
-            onClick={click}
-          >
-            {cards[10]}
-          </button>
-          <button
-            id="a11"
-            className="gameButton"
-            style={cardsColor[11]}
-            onClick={click}
-          >
-            {cards[11]}
-          </button>
-          <button
-            id="a12"
-            className="gameButton"
-            style={cardsColor[12]}
-            onClick={click}
-          >
-            {cards[12]}
-          </button>
-          <button
-            id="a13"
-            className="gameButton"
-            style={cardsColor[13]}
-            onClick={click}
-          >
-            {cards[13]}
-          </button>
-          <button
-            id="a14"
-            className="gameButton"
-            style={cardsColor[14]}
-            onClick={click}
-          >
-            {cards[14]}
-          </button>
-          <button
-            id="a15"
-            className="gameButton"
-            style={cardsColor[15]}
-            onClick={click}
-          >
-            {cards[15]}
-          </button>
-          <button
-            id="a16"
-            className="gameButton"
-            style={cardsColor[16]}
-            onClick={click}
-          >
-            {cards[16]}
-          </button>
-          <button
-            id="a17"
-            className="gameButton"
-            style={cardsColor[17]}
-            onClick={click}
-          >
-            {cards[17]}
-          </button>
-          <button
-            id="a18"
-            className="gameButton"
-            style={cardsColor[18]}
-            onClick={click}
-          >
-            {cards[18]}
-          </button>
-          <button
-            id="a19"
-            className="gameButton"
-            style={cardsColor[19]}
-            onClick={click}
-          >
-            {cards[19]}
-          </button>
-          <button
-            id="a20"
-            className="gameButton"
-            style={cardsColor[20]}
-            onClick={click}
-          >
-            {cards[20]}
-          </button>
-          <button
-            id="a21"
-            className="gameButton"
-            style={cardsColor[21]}
-            onClick={click}
-          >
-            {cards[21]}
-          </button>
-          <button
-            id="a22"
-            className="gameButton"
-            style={cardsColor[22]}
-            onClick={click}
-          >
-            {cards[22]}
-          </button>
-          <button
-            id="a23"
-            className="gameButton"
-            style={cardsColor[23]}
-            onClick={click}
-          >
-            {cards[23]}
-          </button>
-          <button
-            id="a24"
-            className="gameButton"
-            style={cardsColor[24]}
-            onClick={click}
-          >
-            {cards[24]}
-          </button>
+          {cardsColor.map((card, index) => (
+            <Card
+              key={index}
+              cardsColor={cardsColor}
+              setOnClickCard={setOnClickCard}
+              index={index}
+              cards={cards}
+            />
+          ))}
         </div>
         <div className="control">
           {loginUser === redTeam[0] && (
@@ -671,31 +480,14 @@ function Game({ io }) {
         </div>
         {(loginUser === redTeam[0] || loginUser === blueTeam[0]) && (
           <div className="condition">
-            <div id="c0" className="conditionBox" style={colorDis[0]}></div>
-            <div id="c1" className="conditionBox" style={colorDis[1]}></div>
-            <div id="c2" className="conditionBox" style={colorDis[2]}></div>
-            <div id="c3" className="conditionBox" style={colorDis[3]}></div>
-            <div id="c4" className="conditionBox" style={colorDis[4]}></div>
-            <div id="c5" className="conditionBox" style={colorDis[5]}></div>
-            <div id="c6" className="conditionBox" style={colorDis[6]}></div>
-            <div id="c7" className="conditionBox" style={colorDis[7]}></div>
-            <div id="c8" className="conditionBox" style={colorDis[8]}></div>
-            <div id="c9" className="conditionBox" style={colorDis[9]}></div>
-            <div id="c10" className="conditionBox" style={colorDis[10]}></div>
-            <div id="c11" className="conditionBox" style={colorDis[11]}></div>
-            <div id="c12" className="conditionBox" style={colorDis[12]}></div>
-            <div id="c13" className="conditionBox" style={colorDis[13]}></div>
-            <div id="c14" className="conditionBox" style={colorDis[14]}></div>
-            <div id="c15" className="conditionBox" style={colorDis[15]}></div>
-            <div id="c16" className="conditionBox" style={colorDis[16]}></div>
-            <div id="c17" className="conditionBox" style={colorDis[17]}></div>
-            <div id="c18" className="conditionBox" style={colorDis[18]}></div>
-            <div id="c19" className="conditionBox" style={colorDis[19]}></div>
-            <div id="c20" className="conditionBox" style={colorDis[20]}></div>
-            <div id="c21" className="conditionBox" style={colorDis[21]}></div>
-            <div id="c22" className="conditionBox" style={colorDis[22]}></div>
-            <div id="c23" className="conditionBox" style={colorDis[23]}></div>
-            <div id="c24" className="conditionBox" style={colorDis[24]}></div>
+            {colorDis.map((color, index) => (
+              <Conditions
+                key={index}
+                className="conditionBox"
+                color={color}
+                index={index}
+              />
+            ))}
             <div id="left" className="winBox" style={winColor}></div>
             <div id="right" className="winBox" style={winColor}></div>
           </div>

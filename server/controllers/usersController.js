@@ -1,8 +1,6 @@
 const db = require("../models/usersModels");
-// const { checkout } = require("../routes/routes");
 const bcrypt = require("bcryptjs");
 const SALT_WORK_FACTOR = 5;
-
 const usersController = {};
 
 usersController.getAllUsers = async (req, res, next) => {
@@ -21,7 +19,6 @@ usersController.verifyUsers = async (req, res, next) => {
     const username = req.body.loginDetails.username;
     const person = `SELECT * FROM person WHERE username='${username}'`;
     const result = await db.query(person);
-    console.log(result.rows.length);
     if (result.rows.length === 1) {
       if (
         (await bcrypt.compare(
@@ -46,7 +43,6 @@ usersController.verifyUsers = async (req, res, next) => {
 
 usersController.createUser = async (req, res, next) => {
   //check the username whether already existed
-  // console.log(req.body.registeDetails.username.includes(" "));
   if (
     req.body.registeDetails.username.includes(" ") ||
     req.body.registeDetails.password.includes(" ")

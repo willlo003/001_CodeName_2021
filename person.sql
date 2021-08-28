@@ -5,7 +5,6 @@ create table person (
 	games INT,
 	win INT
 );
-insert into person (username, password, games, win) values ('will', '61471670', null, null);
 insert into person (username, password, games, win) values ('bwotton1', 'VNqgBSA2sHag', null, null);
 insert into person (username, password, games, win) values ('gzannuto2', 'hHnzctzqrd', null, null);
 insert into person (username, password, games, win) values ('mgodmar3', 'Si7CAWWqDzx', null, null);

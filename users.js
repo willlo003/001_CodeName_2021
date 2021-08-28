@@ -1,6 +1,5 @@
 var pg = require("pg");
 //or native libpq bindings
-//var pg = require('pg').native
 
 var conString =
   "postgres://ovyisvwv:1gk_ZQeJmeTW558RKLRihWDOE7Qr0lKO@batyr.db.elephantsql.com/ovyisvwv"; //Can be found in the Details page
@@ -13,8 +12,6 @@ client.connect(function (err) {
     if (err) {
       return console.error("error running query", err);
     }
-    console.log(result.rows[0].theTime);
-    // >> output: 2018-08-23T14:02:57.117Z
     client.end();
   });
 });

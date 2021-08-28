@@ -3,10 +3,10 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
+//set up io.socket
 const http = require("http");
 const socketIO = require("socket.io");
 const server = http.createServer(app);
-
 const io = socketIO(server);
 
 const port = 3000;
@@ -27,16 +27,16 @@ if (process.env.NODE_ENV === "production") {
 
   //define route handler
   app.use("/", router);
+
+  // catch-all route handler for any requests to an unknown route
+  app.use((req, res) =>
+    res.status(404).send("This is not the page you're looking for...")
+  );
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../index.html"));
+  });
 }
-
-// catch-all route handler for any requests to an unknown route
-app.use((req, res) =>
-  res.status(404).send("This is not the page you're looking for...")
-);
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../index.html"));
-});
 
 const user = {};
 
@@ -45,19 +45,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("user " + user[socket.id] + " disconnected");
   });
-  // lobby;
-  /*   socket.on("player logged on", (msg) => {
-    console.log("user " + msg + " connected");
-    user[socket.id] = msg;
-    console.log(user);
-    socket.broadcast.emit("player logged on", msg);
-  });
-  socket.on("player", (msg) => {
-    io.emit("player", msg);
-  });
-  socket.on("game start", (msg) => {
-    io.emit("game start", msg);
-  }); */
   //game
   socket.on("assign", (msg) => {
     io.emit("assign", msg);

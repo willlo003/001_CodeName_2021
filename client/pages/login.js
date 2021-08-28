@@ -15,9 +15,11 @@ function Login({ io, setToken, setOnlinePlayer }) {
 
   function signUp(e) {
     e.preventDefault();
+
     const body = {
       registeDetails,
     };
+
     fetch("/register", {
       method: "POST",
       headers: {
@@ -42,6 +44,7 @@ function Login({ io, setToken, setOnlinePlayer }) {
     const body = {
       loginDetails,
     };
+
     fetch("/login", {
       method: "POST",
       headers: {
